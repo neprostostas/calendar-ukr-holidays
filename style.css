@@ -1,0 +1,652 @@
+/* === Базові змінні та скидання === */
+:root {
+  --night-deep: #0a0e1f;
+  --night-blue: #121a35;
+  --night-purple: #1e1540;
+  --moon-glow: #c8d8f0;
+  --gold: #d4a84b;
+  --gold-light: #f0d78c;
+  --gold-dim: #8a6b2e;
+  --forest: #0d2818;
+  --text: #e8e4f0;
+  --text-muted: #9a94b0;
+  --card-bg: rgba(18, 26, 53, 0.75);
+  --glow: rgba(212, 168, 75, 0.35);
+  --weekend: rgba(100, 140, 200, 0.2);
+  --holiday: rgba(212, 168, 75, 0.25);
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Literata', Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-dim) var(--night-blue);
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--night-deep);
+  overflow-x: hidden;
+}
+
+/* Виділення тексту: золотий фон + темний текст для контрасту з нічною темою */
+::selection {
+  background: var(--gold-light);
+  color: var(--night-deep);
+}
+
+::-moz-selection {
+  background: var(--gold-light);
+  color: var(--night-deep);
+}
+
+/* Скролбар у кольорах нічної теми */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--night-blue);
+  border-left: 1px solid rgba(212, 168, 75, 0.12);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--gold), var(--gold-dim));
+  border-radius: 100px;
+  border: 2px solid var(--night-blue);
+  box-shadow: inset 0 0 6px rgba(240, 215, 140, 0.25);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  box-shadow: 0 0 8px var(--glow);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--night-deep);
+}
+
+/* === Зоряне небо та паралакс-шари === */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    var(--night-deep) 0%,
+    var(--night-purple) 45%,
+    var(--night-blue) 75%,
+    #0f1a2e 100%
+  );
+  pointer-events: none;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+}
+
+/* Дальні зірки — повільний паралакс при русі миші */
+.stars--far {
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #fff 50%, transparent 50%),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.8) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 50% 10%, #fff 50%, transparent 50%),
+    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.7) 50%, transparent 50%),
+    radial-gradient(1px 1px at 90% 80%, #fff 50%, transparent 50%),
+    radial-gradient(1px 1px at 15% 90%, rgba(255,255,255,0.6) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 85% 15%, #fff 50%, transparent 50%),
+    radial-gradient(1px 1px at 45% 75%, rgba(255,255,255,0.5) 50%, transparent 50%);
+  background-size: 350px 350px;
+  opacity: 0.6;
+  transition: transform 0.3s ease-out;
+}
+
+.stars--near {
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, var(--moon-glow) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 60% 50%, #fff 50%, transparent 50%),
+    radial-gradient(2px 2px at 80% 70%, rgba(240,215,140,0.9) 50%, transparent 50%),
+    radial-gradient(1px 1px at 40% 85%, #fff 50%, transparent 50%);
+  background-size: 280px 280px;
+  opacity: 0.85;
+  animation: twinkle 4s ease-in-out infinite alternate;
+  transition: transform 0.2s ease-out;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+/* Місяць з м'яким світінням */
+.moon {
+  position: absolute;
+  top: 4%;
+  right: 8%;
+  width: clamp(60px, 12vw, 100px);
+  height: clamp(60px, 12vw, 100px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffef5, var(--moon-glow) 40%, #a8b8d0 100%);
+  box-shadow:
+    0 0 40px rgba(200, 216, 240, 0.5),
+    0 0 80px rgba(200, 216, 240, 0.25),
+    inset -8px -4px 12px rgba(0, 0, 0, 0.15);
+  animation: moonPulse 6s ease-in-out infinite;
+}
+
+@keyframes moonPulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(200, 216, 240, 0.5), 0 0 80px rgba(200, 216, 240, 0.25); }
+  50% { box-shadow: 0 0 55px rgba(200, 216, 240, 0.65), 0 0 100px rgba(240, 215, 140, 0.2); }
+}
+
+/* Мерехтливі магічні частинки */
+.particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--gold-light);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatParticle var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+  box-shadow: 0 0 6px var(--glow);
+}
+
+@keyframes floatParticle {
+  0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+  20% { opacity: 0.8; }
+  50% { opacity: 0.4; transform: translateY(-30px) scale(1); }
+  80% { opacity: 0.6; }
+}
+
+/* Силует містичного лісу внизу */
+.forest-silhouette {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 18vh;
+  background:
+    linear-gradient(to top, var(--forest) 0%, transparent 100%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%230d2818' d='M0 120 L0 80 Q30 60 60 80 T120 70 T180 85 T240 65 T300 75 T360 60 T420 80 T480 55 T540 70 T600 50 T660 75 T720 60 T780 80 T840 55 T900 70 T960 65 T1020 80 T1080 60 T1140 75 T1200 70 L1200 120 Z'/%3E%3C/svg%3E") bottom / 100% 100% no-repeat;
+  opacity: 0.85;
+}
+
+/* === Основний контент поверх фону === */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+/* === Мета проєкту (ITLEO Academy) === */
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.project-meta__label {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid rgba(212, 168, 75, 0.45);
+  border-radius: 4px;
+  color: var(--gold);
+  background: rgba(212, 168, 75, 0.1);
+}
+
+.project-meta__academy {
+  color: var(--text-muted);
+}
+
+/* === Шапка-книга === */
+.book-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.book-subtitle {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.book-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dim));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 20px var(--glow));
+  margin-bottom: 0.75rem;
+}
+
+.book-motto {
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Декоративний український орнамент (CSS-патерн) */
+.ornament {
+  height: 24px;
+  margin: 0 auto 1rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='24' viewBox='0 0 200 24'%3E%3Cpath fill='none' stroke='%23d4a84b' stroke-width='1' opacity='0.6' d='M0 12 H40 M50 12 L60 4 L70 12 L60 20 Z M80 12 H120 M130 12 L140 4 L150 12 L140 20 Z M160 12 H200'/%3E%3Ccircle cx='100' cy='12' r='3' fill='%23d4a84b' opacity='0.8'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.ornament--bottom {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  transform: rotate(180deg);
+}
+
+/* === Запис сьогоднішнього дня === */
+.today-entry {
+  background: var(--card-bg);
+  border: 1px solid rgba(212, 168, 75, 0.3);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.today-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.35rem;
+}
+
+.today-date {
+  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  line-height: 1.5;
+}
+
+/* === Інформаційні картки === */
+.info-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.info-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.info-card:hover {
+  border-color: rgba(212, 168, 75, 0.25);
+  box-shadow: 0 0 20px rgba(212, 168, 75, 0.1);
+}
+
+.info-card--accent {
+  border-color: rgba(212, 168, 75, 0.35);
+  background: linear-gradient(135deg, rgba(30, 21, 64, 0.8), rgba(18, 26, 53, 0.85));
+}
+
+.info-card__title {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.info-card__value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  line-height: 1.4;
+}
+
+.info-card__count {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  text-shadow: 0 0 20px var(--glow);
+}
+
+.info-card__meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+/* === Календар === */
+.calendar-book {
+  background: var(--card-bg);
+  border: 1px solid rgba(212, 168, 75, 0.25);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.calendar-month {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  color: var(--gold-light);
+  text-align: center;
+}
+
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(212, 168, 75, 0.4);
+  border-radius: 50%;
+  background: rgba(30, 21, 64, 0.6);
+  color: var(--gold);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  background: rgba(212, 168, 75, 0.15);
+  box-shadow: 0 0 16px var(--glow);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* Легенда позначок */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  list-style: none;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot--holiday { background: var(--gold); box-shadow: 0 0 6px var(--glow); }
+.legend-dot--weekend { background: rgba(100, 140, 200, 0.8); }
+.legend-dot--today { background: #fff; box-shadow: 0 0 8px var(--moon-glow); }
+
+/* Сітка днів тижня та календаря */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-grid--days {
+  margin-top: 6px;
+}
+
+.weekday {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--gold-dim);
+  padding: 0.5rem 0;
+}
+
+/* Окрема клітинка дня */
+.day {
+  aspect-ratio: 1;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: default;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  padding: 4px;
+}
+
+.day--empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.day--weekend {
+  background: var(--weekend);
+}
+
+.day--holiday {
+  background: var(--holiday);
+  border-color: rgba(212, 168, 75, 0.35);
+}
+
+.day--holiday .day__symbol {
+  display: block;
+}
+
+/* Підсвітка поточного дня */
+.day--today {
+  border-color: var(--moon-glow);
+  box-shadow: 0 0 16px rgba(200, 216, 240, 0.35), inset 0 0 12px rgba(200, 216, 240, 0.1);
+  background: rgba(200, 216, 240, 0.12);
+}
+
+.day--clickable {
+  cursor: pointer;
+}
+
+.day--clickable:hover {
+  border-color: rgba(212, 168, 75, 0.5);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.day__num {
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  font-weight: 600;
+}
+
+.day__symbol {
+  display: none;
+  font-size: 0.65rem;
+  color: var(--gold);
+  margin-top: 2px;
+  text-shadow: 0 0 6px var(--glow);
+}
+
+/* === Підвал === */
+.book-footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.book-footer__credit {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--gold-dim);
+}
+
+/* === Модальне вікно свята === */
+.holiday-modal {
+  border: 1px solid rgba(212, 168, 75, 0.4);
+  border-radius: 16px;
+  padding: 2rem 1.75rem 1.75rem;
+  max-width: 420px;
+  width: calc(100% - 2rem);
+  background: linear-gradient(160deg, var(--night-purple), var(--night-blue));
+  color: var(--text);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 60px var(--glow);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+.holiday-modal::backdrop {
+  background: rgba(10, 14, 31, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.2s, color 0.2s;
+}
+
+.modal-close:hover {
+  background: rgba(212, 168, 75, 0.2);
+  color: var(--gold);
+}
+
+.modal-symbol {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 12px var(--glow);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.modal-date {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.modal-desc {
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+/* === Адаптивність === */
+@media (max-width: 600px) {
+  .info-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .moon {
+    right: 5%;
+    top: 2%;
+  }
+
+  .calendar-book {
+    padding: 1rem;
+  }
+
+  .day {
+    min-height: 40px;
+    border-radius: 8px;
+  }
+
+  .legend {
+    gap: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .day__symbol {
+    display: none !important;
+  }
+
+  .day--holiday::after {
+    content: '✦';
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 0.5rem;
+    color: var(--gold);
+  }
+}

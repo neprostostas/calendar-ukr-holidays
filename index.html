@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <title>Календар Українських Свят</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO -->
+    <meta name="keywords" content="календар свят україни, державні свята україни, вихідні дні україни, українські свята, календар вихідних, національні свята, свята україни 2026">
+
+    <meta name="description" content="Інтерактивний календар національних свят та офіційних вихідних України у стилі магічного фоліанту. Державні свята, зворотний відлік до найближчого свята та короткі описи традицій.">
+
+    <meta name="author" content="Lubomur Kinash">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="uk">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Календар Українських Свят">
+    <meta property="og:description" content="Календар державних свят та вихідних України: інтерактивний фоліант з нагадуванням найближчого свята та зворотним відліком днів.">
+
+    <meta property="og:url" content="https://calendar-ukr-holidays.netlify.app">
+    <meta property="og:site_name" content="Календар Українських Свят">
+    <meta property="og:image" content="https://res.cloudinary.com/lr/image/upload/og-image-calendar.png">
+    <meta property="og:image:alt" content="Календар Українських Свят — превʼю">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Календар Українських Свят">
+    <meta name="twitter:description" content="Інтерактивний календар українських свят та вихідних у стилі чарівної книги знань мольфарів.">
+
+    <meta name="twitter:image" content="https://res.cloudinary.com/lr/image/upload/og-image-calendar.png">
+    <meta name="twitter:image:alt" content="Календар Українських Свят — превʼю">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0a0e1f">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+    <link rel="manifest" href="favicons/site.webmanifest">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Literata:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+  <!-- Фон: зоряне небо, місяць та мерехтливі частинки -->
+  <div class="sky" aria-hidden="true">
+    <div class="stars stars--far"></div>
+    <div class="stars stars--near"></div>
+    <div class="moon"></div>
+    <div class="particles" id="particles"></div>
+    <div class="forest-silhouette"></div>
+  </div>
+
+  <div class="page">
+    <!-- Мета: академія та номер проєкту -->
+    <p class="project-meta">
+      <span class="project-meta__label">Проект 2</span>
+      <span class="project-meta__academy">ITLEO Academy</span>
+    </p>
+
+    <!-- Шапка у стилі обкладинки магічного фоліанту -->
+    <header class="book-header">
+      <div class="ornament ornament--top" aria-hidden="true"></div>
+      <p class="book-subtitle">Фоліант знань мольфарів</p>
+      <h1 class="book-title">Календар Українських Свят</h1>
+      <p class="book-motto">«Хто знає дні святих — той береже час і душу»</p>
+    </header>
+
+    <!-- Запис поточної дати як рядок у чарівному щоденнику -->
+    <section class="today-entry" aria-label="Сьогоднішня дата">
+      <span class="today-label">Запис дня</span>
+      <p class="today-date" id="todayDate"></p>
+    </section>
+
+    <!-- Блоки найближчого свята та зворотного відліку -->
+    <section class="info-panels">
+      <article class="info-card" id="nearestHoliday">
+        <h2 class="info-card__title">Найближче свято</h2>
+        <p class="info-card__value" id="nearestHolidayName">—</p>
+        <p class="info-card__meta" id="nearestHolidayDate"></p>
+      </article>
+      <article class="info-card info-card--accent">
+        <h2 class="info-card__title">Скільки днів залишилось</h2>
+        <p class="info-card__count" id="daysLeft">—</p>
+        <p class="info-card__meta" id="daysLeftLabel"></p>
+      </article>
+    </section>
+
+    <!-- Основний календар поточного місяця -->
+    <main class="calendar-book" aria-label="Календар свят">
+      <div class="calendar-nav">
+        <button class="nav-btn" id="prevMonth" aria-label="Попередній місяць">‹</button>
+        <h2 class="calendar-month" id="monthLabel"></h2>
+        <button class="nav-btn" id="nextMonth" aria-label="Наступний місяць">›</button>
+      </div>
+
+      <!-- Легенда позначок на календарі -->
+      <ul class="legend">
+        <li><span class="legend-dot legend-dot--holiday"></span> Державне свято</li>
+        <li><span class="legend-dot legend-dot--weekend"></span> Вихідний</li>
+        <li><span class="legend-dot legend-dot--today"></span> Сьогодні</li>
+      </ul>
+
+      <div class="calendar-grid" id="weekdays" aria-hidden="true"></div>
+      <div class="calendar-grid calendar-grid--days" id="calendarDays" role="grid"></div>
+    </main>
+
+    <footer class="book-footer">
+      <div class="ornament ornament--bottom" aria-hidden="true"></div>
+      <p>Календар національних свят та офіційних вихідних України</p>
+      <p class="book-footer__credit">Made by Liubomur Kinash</p>
+    </footer>
+  </div>
+
+  <!-- Модальне вікно з описом свята при натисканні на день -->
+  <dialog class="holiday-modal" id="holidayModal">
+    <button class="modal-close" id="modalClose" aria-label="Закрити">×</button>
+    <div class="modal-symbol" aria-hidden="true">✦</div>
+    <h3 class="modal-title" id="modalTitle"></h3>
+    <p class="modal-date" id="modalDate"></p>
+    <p class="modal-desc" id="modalDesc"></p>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
