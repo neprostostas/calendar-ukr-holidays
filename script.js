@@ -349,6 +349,80 @@ holidayModal.addEventListener('click', (e) => {
   if (e.target === holidayModal) holidayModal.close();
 });
 
+// --- Поширити ---
+const SHARE_URL = 'https://calendar-ukr-holidays.netlify.app/';
+const SHARE_TITLE = 'Календар Українських Свят';
+const SHARE_TEXT = 'Інтерактивний календар національних свят та вихідних України';
+
+function showShareFeedback(btn, label) {
+  const originalLabel = 'Поширити';
+  const originalAria = btn.getAttribute('aria-label');
+
+  label.textContent = 'Посилання скопійовано!';
+  btn.classList.add('share-btn--copied');
+  btn.setAttribute('aria-label', 'Посилання скопійовано');
+
+  setTimeout(() => {
+    label.textContent = originalLabel;
+    btn.classList.remove('share-btn--copied');
+    btn.setAttribute('aria-label', originalAria || 'Поширити календар');
+  }, 2000);
+}
+
+/** Копіювання посилання в буфер (Clipboard API + запасний варіант) */
+async function copyShareUrl() {
+  try {
+    await navigator.clipboard.writeText(SHARE_URL);
+    return true;
+  } catch {
+    try {
+      const input = document.createElement('textarea');
+      input.value = SHARE_URL;
+      input.setAttribute('readonly', '');
+      input.style.position = 'fixed';
+      input.style.left = '-9999px';
+      document.body.appendChild(input);
+      input.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(input);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}
+
+function initShare() {
+  const btn = document.getElementById('shareBtn');
+  const label = btn.querySelector('.share-btn__label');
+
+  btn.addEventListener('click', async () => {
+    const copied = await copyShareUrl();
+
+    if (copied) {
+      showShareFeedback(btn, label);
+    }
+
+    // Додатково — системне вікно «Поділитися», якщо доступне
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: SHARE_TITLE,
+          text: SHARE_TEXT,
+          url: SHARE_URL,
+        });
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+      return;
+    }
+
+    if (!copied) {
+      window.open(SHARE_URL, '_blank', 'noopener');
+    }
+  });
+}
+
 // --- Декоративні частинки на фоні ---
 function createParticles() {
   const container = document.getElementById('particles');
@@ -386,6 +460,7 @@ function init() {
   renderNearestHoliday();
   createParticles();
   initParallax();
+  initShare();
 }
 
 init();
